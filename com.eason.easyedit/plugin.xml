@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.eason.easyedit.FileEditor"
+            default="false"
+            extensions="foo"
+            icon="icons/file_obj.gif"
+            id="com.eason.easyedit"
+            name="EasyEditor"/>
+   </extension>
+</plugin>
