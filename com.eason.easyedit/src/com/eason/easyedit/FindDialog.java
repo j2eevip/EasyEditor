@@ -26,19 +26,10 @@ public class FindDialog extends Dialog {
 	private Button btnIgnoreCase;
 
 	
-	/**
-	 * @wbp.parser.constructor
-	 */
 	public FindDialog(Shell parent, StyledText searchContext) {
-		// Pass the default styles here
 		this(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, searchContext);
 	}
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public FindDialog(Shell parent, int style, StyledText searchContext) {
 		super(parent, style);
 		setText("Search");
@@ -75,12 +66,7 @@ public class FindDialog extends Dialog {
 			findPrevious();
 		}
 	}
-
 	
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		shlFind.open();
@@ -93,10 +79,7 @@ public class FindDialog extends Dialog {
 		}
 		return result;
 	}
-
-	/**
-	 * Create contents of the dialog.
-	 */
+	
 	private void createContents() {
 		shlFind = new Shell(getParent(), SWT.DIALOG_TRIM);
 		shlFind.setSize(450, 128);
