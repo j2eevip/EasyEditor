@@ -1,4 +1,5 @@
-package com.eason.easyedit;
+package com.eason.listener;
+
 
 class CodeScanner {
 	private static final String[] FGKEYWORDS = {"declare", "define","and", "not", "or", "if", "lambda", "any"};

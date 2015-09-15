@@ -1,41 +1,34 @@
 package com.eason.easyedit;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 
 public class FindDialog extends Dialog {
+	private static FindDialog instance;
+	
+	public static FindDialog getInstance(Shell parent, StyledText searchComponet) {
+		if (null == instance) {
+			instance = new FindDialog(parent, searchComponet);
+		}
+		return instance;
+	}
 
-	protected Object result;
-	protected Shell shlFind;
 	private Text searchText;
 	private StyledText searchContext;
-	private Button btnIgnoreCase;
 
-	
-	public FindDialog(Shell parent, StyledText searchContext) {
-		this(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, searchContext);
-	}
-
-	public FindDialog(Shell parent, int style, StyledText searchContext) {
-		super(parent, style);
-		setText("Search");
-		this.searchContext = searchContext;
-	}
-	
 	private void findNext(){
 		String search = searchText.getText();
 		Point p = searchContext.getSelectionRange();
@@ -67,88 +60,65 @@ public class FindDialog extends Dialog {
 		}
 	}
 	
-	public Object open() {
-		createContents();
-		shlFind.open();
-		shlFind.layout();
-		Display display = getParent().getDisplay();
-		while (!shlFind.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
-		return result;
-	}
-	
-	private void createContents() {
-		shlFind = new Shell(getParent(), SWT.DIALOG_TRIM);
-		shlFind.setSize(450, 128);
-		shlFind.setText("Find");
-		GridLayout gl_shlFind = new GridLayout(1, false);
-		gl_shlFind.verticalSpacing = 0;
-		gl_shlFind.marginWidth = 0;
-		gl_shlFind.marginBottom = 5;
-		gl_shlFind.marginTop = 5;
-		gl_shlFind.marginRight = 5;
-		gl_shlFind.marginLeft = 5;
-		gl_shlFind.marginHeight = 0;
-		gl_shlFind.horizontalSpacing = 0;
-		shlFind.setLayout(gl_shlFind);
-		
-		Label lblSearchString = new Label(shlFind, SWT.NONE);
-		lblSearchString.setBounds(0, 0, 59, 14);
-		lblSearchString.setText("Search String:");
-		
-		searchText = new Text(shlFind, SWT.BORDER);
-		searchText.addKeyListener(new KeyAdapter() {
+	protected FindDialog(Shell shell, StyledText searchComponet) {  
+        super(shell);  
+        this.searchContext = searchComponet;
+    }  
+
+    @Override  
+    protected Control createDialogArea(Composite parent) {  
+        Composite comp = new Composite(parent, SWT.None);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        layout.marginHeight = 1;
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginBottom = 0;
+        layout.marginTop = 0;
+        layout.marginWidth = 0;
+        layout.makeColumnsEqualWidth = true;
+        comp.setLayout(layout);  
+        Label lbl = new Label(comp, SWT.None);
+        lbl.setText("Search Key:");
+        searchText = new Text(comp, SWT.BORDER);  
+        searchText.setLayoutData(new GridData(GridData.FILL_BOTH));
+        return super.createDialogArea(parent);  
+    }  
+
+    @Override  
+    protected Button createButton(Composite parent, int id, String label,  
+            boolean defaultButton) {  
+        return null;
+    }  
+
+    @Override  
+    protected void initializeBounds() {  
+        Composite compo = (Composite) getButtonBar();  
+        Button prev = super.createButton(compo, IDialogConstants.BACK_ID, "Previous", false);
+        prev.addListener(SWT.SELECTED, new Listener() {
 			@Override
-			public void keyPressed(KeyEvent arg0) {
-				if(arg0.character == 13){
-					findNext();
-				}
-			}
-		});
-		searchText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		btnIgnoreCase = new Button(shlFind, SWT.CHECK);
-		btnIgnoreCase.setText("Ignore Case");
-		
-		Composite composite = new Composite(shlFind, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, true, 1, 1));
-		GridLayout gl_composite = new GridLayout(3, false);
-		gl_composite.horizontalSpacing = 0;
-		gl_composite.marginWidth = 0;
-		gl_composite.marginHeight = 0;
-		gl_composite.verticalSpacing = 0;
-		composite.setLayout(gl_composite);
-		
-		Button btnPrevious = new Button(composite, SWT.NONE);
-		btnPrevious.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
+			public void handleEvent(Event paramEvent) {
 				findPrevious();
 			}
 		});
-		btnPrevious.setText("Previous");
-		
-		Button btnNext = new Button(composite, SWT.NONE);
-		btnNext.addSelectionListener(new SelectionAdapter() {
+        Button find = super.createButton(compo, IDialogConstants.NEXT_ID, "Next", true);
+        find.addListener(SWT.SELECTED, new Listener() {
 			@Override
-			public void widgetSelected(SelectionEvent arg0) {
+			public void handleEvent(Event paramEvent) {
 				findNext();
 			}
 		});
-		btnNext.setText("Next");
-		
-		Button btnCancel = new Button(composite, SWT.NONE);
-		btnCancel.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				shlFind.close();
-			}
-		});
-		btnCancel.setBounds(0, 0, 94, 30);
-		btnCancel.setText("Cancel");
+        super.createButton(compo, IDialogConstants.NO_ID, "Cancel", false);  
+        super.initializeBounds();  
+    }  
 
-	}
+    @Override  
+    protected Point getInitialSize() {  
+        return new Point(300, 180);
+    }  
+
+    @Override  
+    protected Button getButton(int id) {  
+        return super.getButton(id);  
+    }  
 }
