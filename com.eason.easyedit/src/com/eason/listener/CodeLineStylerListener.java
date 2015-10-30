@@ -70,7 +70,8 @@ class CodeLineStylerListener implements LineStyleListener {
 	public void lineGetStyle(LineStyleEvent event) {
 		StyledText text = (StyledText) event.widget;
 		StyleRange styleRange = new StyleRange();
-		styleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+		styleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
+		styleRange.background = Display.getCurrent().getSystemColor(SWT.COLOR_GREEN);
 		int maxLine = text.getLineCount();
 		int bulletLength = Integer.toString(maxLine).length();
 		int bulletWidth = (bulletLength + 1) * text.getLineHeight() / 2;
@@ -127,6 +128,16 @@ class CodeLineStylerListener implements LineStyleListener {
 			}
 			token = scanner.nextToken();
 		}
+
+
+//		StyleRange[] styleRanges = text.getStyleRanges();
+//		StyleRange[] highlightRanges = new StyleRange[10 + styleRanges.length]; 
+		for (int i = 0; i < 10; i++) {
+			styleRange = new StyleRange(0 + i * 10 , 10, null, Display.getDefault().getSystemColor(SWT.COLOR_GREEN));
+			styles.add(styleRange);
+		}
+//		System.arraycopy(highlightRanges, 10, styleRanges, 0, styleRanges.length);
+//		text.setStyleRanges(highlightRanges);
 		event.styles = new StyleRange[styles.size()];
 		styles.copyInto(event.styles);
 	}
